@@ -81,7 +81,7 @@ class ArticlesModel:
     def get_all_articles(self):
         pass
     
-    def delete_article(self, user_id):
+    def delete_article(self, article_id):
         pass
     
     def get_article_by_author(self):
