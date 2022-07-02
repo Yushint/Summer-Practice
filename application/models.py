@@ -53,7 +53,7 @@ class UsersModel:
         return users_global_data
     
     def delete_user(self, user_id):
-        """Удаление бюзера по его уникальному user_id."""
+        """Удаление юзера по его уникальному user_id."""
         cursor = self.connection.cursor()
         cursor.execute('''DELETE FROM users WHERE user_id = ?''', [user_id])
         cursor.close()
@@ -62,32 +62,80 @@ class UsersModel:
 
 class ArticlesModel:
     """Класс описания информационной модели статьи. Доработать вечером
-       после тестов модели юзера."""
+       после тестов модели юзера.
+       Модель: автор, заголовок, ключевая тема, текст, рейтинг."""
     def __init__(self, connection):
-        pass
+        self.connection = connection
         
     def initialize_table(self):
-        pass
+        """Инициализация таблиц БД."""
+        cursor = self.connection.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS articles
+                            (article_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                             author VARCHAR(20),
+                             title VARCHAR(30),
+                             key_theme VARCHAR(30),
+                             text VARCHAR(256),
+                             rating INTEGER)''')
+        cursor.close()
+        self.connection.commit()
         
-    def insert(self):
-        pass
+    def insert(self, author, title, key_theme, text, rating):
+        """Вставка инфо в БД."""
+        cursor = self.connection.cursor()
+        cursor.execute('''INSERT INTO articles
+                          (author, title, key_theme, text, rating) 
+                          VALUES (?,?,?,?,?)''',
+                       (str(author), str(title), str(key_theme), str(text), str(rating)))
+        cursor.close()
+        self.connection.commit()
         
-    def is_article_exists(self):
-        pass
+    def is_article_exists(self, author, title):
+        """Проверка существования статьи по автору и заголовку."""
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT * FROM articles WHERE author = ? AND title = ?''',
+                       (str(author), str(title)))
+        data = cursor.fetchone()
+        return (True, data[0]) if data else False
     
-    def get_article(self):
-        pass
+    def get_article(self, article_id):
+        """Запрос статьи по id."""
+        cursor = self.connetion.cursor()
+        cursor.execute('''SELECT * FROM articles WHERE article_id = ?''', str(article_id))
+        data = cursor.fetchone()
+        return data
     
     def get_all_articles(self):
-        pass
+        """Запрос всех статей."""
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT * FROM articles''')
+        data = cursor.fetchall()
+        return data
     
     def delete_article(self, article_id):
-        pass
+        """Удаление статьи по id."""
+        cursor = self.connection.cursor()
+        cursor.execute('''DELETE * FROM articles WHERE article_id = ?''', str(article_id))
+        cursor.close()
+        self.connection.commit()
     
-    def get_article_by_author(self):
-        pass
+    def get_article_by_author(self, author):
+        """Запрос статьи по автору."""
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT * FROM articles WHERE author = ?''', str(author))
+        data = cursor.fetchall()
+        return data
     
-    def get_article_by_theme(self):
-        pass
+    def get_article_by_key_theme(self, key_theme):
+        """Запрос статьи по ключевой теме."""
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT * FROM articles WHERE key_theme = ?''', str(key_theme))
+        data = cursor.fetchall()
+        return data
     
-        
+    def get_article_by_ratng(self, start_rating, end_rating):
+        """Запрос статьи по рейтингу."""
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT * FROM articles WHERE rating >= ? AND rating <= ?''', (str(start_rating), str(end_rating)))
+        data = cursor.fetchall()
+        return data
