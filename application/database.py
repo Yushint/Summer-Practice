@@ -11,7 +11,7 @@ class DB:
         self.conn = connection
         
     def get_connection(self):
-        """Возвращаем текущий onnection через self.conn, который нужен будет для
+        """Возвращаем текущий сonnection через self.conn, который нужен будет для
            подклчючения информационных моделей user/article.
         """
         return self.conn
