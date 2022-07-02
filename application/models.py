@@ -100,7 +100,7 @@ class ArticlesModel:
     
     def get_article(self, article_id):
         """Запрос статьи по id."""
-        cursor = self.connetion.cursor()
+        cursor = self.connection.cursor()
         cursor.execute('''SELECT * FROM articles WHERE article_id = ?''', str(article_id))
         data = cursor.fetchone()
         return data
@@ -122,7 +122,7 @@ class ArticlesModel:
     def get_article_by_author(self, author):
         """Запрос статьи по автору."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles WHERE author = ?''', str(author))
+        cursor.execute('''SELECT * FROM articles WHERE author = ?''', (str(author),))
         data = cursor.fetchall()
         return data
     
@@ -133,7 +133,7 @@ class ArticlesModel:
         data = cursor.fetchall()
         return data
     
-    def get_article_by_ratng(self, start_rating, end_rating):
+    def get_article_by_rating(self, start_rating, end_rating):
         """Запрос статьи по рейтингу."""
         cursor = self.connection.cursor()
         cursor.execute('''SELECT * FROM articles WHERE rating >= ? AND rating <= ?''', (str(start_rating), str(end_rating)))
