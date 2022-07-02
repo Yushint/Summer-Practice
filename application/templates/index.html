@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=" UTF-8 ">
+        <link rel="stylesheet" href="../static/css/style.css" type="text/css">
+        <title>Регистрация пользователя</title>
+    </head>
+    <body>
+        <div class="hero">
+            <div class="form-box">
+                <div class="button-box">
+                    <div id="btn"></div>
+                    <button type="button" class="toggle-btn" onclick="login()">Вход</button>
+                    <button type="button" class="toggle-btn" onclick="register()">Регистрация</button>
+                </div>
+            <form id="login" class="input-group">
+                <input type="text" class="input-field" placeholder="Имя пользователя" required>
+                <input type="text" class="input-field" placeholder="Пароль" required>
+                <input type="checkbox" class="checkbox"> <span>Запомнить пароль</span>
+                <button tipe = "sumbit" class="sumbit-btn">Вход</button>
+            </form>
+            <form id="register" class="input-group">
+                <input type="text" class="input-field" placeholder="Имя пользователя" required>
+                <input type="text" class="input-field" placeholder="Пароль" required>
+                <input type="text" class="input-field" placeholder="Почта" required>
+                <button tipe = "sumbit" class="sumbit-btn">Регистрация</button>
+            </form>
+        </div>
+        </div>
+        <script>
+            var x=document.getElementById("login")
+            var y=document.getElementById("register")
+            var z=document.getElementById("btn")
+
+            function register(){
+                x.style.left = "-650px"
+                y.style.left = "150px"
+                z.style.left = "110px"
+            }
+            function login(){
+                x.style.left = "150px"
+                y.style.left = "650px"
+                z.style.left = "0px"
+            }
+        </script>
+    </body>
+</html
+>
+

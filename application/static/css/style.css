@@ -1,0 +1,85 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+}
+.hero{
+    height: 100%;
+    width: 100%;
+    background:url(../img/Header.jpeg) ;
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+}
+.form-box{
+    height: 380px;
+    width: 380px;
+    position: relative;
+    margin: 1% auto;
+    background: #fff;
+    padding: 100px;
+    overflow: hidden;
+}
+.toggle-btn{
+    padding: 10px 30px;
+    cursor: pointer;
+    border: 0;
+    outline: none;
+    position: relative;
+}
+#btn{
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 110px;
+    height: 100%;
+}
+.button-box{
+    width: 233px;
+    margin: 30px auto;
+    position: relative;
+}
+.input-group{
+    top: 180px;
+    position: absolute;
+    width: 280px;
+    transition: .5s;
+}
+.input-field{
+    width: 100%;
+    padding: 10px 0;
+    margin: 5px 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+    }
+    .sumbit-btn{
+        widows: 85%;
+        padding: 10px 30px;
+        cursor: pointer;
+        display: block;
+        margin: auto;
+        background: linear-gradient(to right, #FBCEB1, #7FFFD4);
+        border: 0;
+        outline: none;
+        border-radius: 30px;
+    }
+    .checkbox{
+        margin: 30px 10px 30px 0;
+    }
+    span{
+        color: #000;
+        font-size: 14px;
+        bottom: 63px;
+        position: absolute;
+    }
+
+#login{
+    left: 160px;
+}
+#register{
+    left: 650px;
+}
