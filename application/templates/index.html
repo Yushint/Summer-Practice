@@ -24,8 +24,13 @@
                 <input type="text" name="reg-userpass" class="input-field" placeholder="Пароль" required>
                 <input type="text" name="reg-usermail" class="input-field" placeholder="Почта" required>
                 <button type = "sumbit" class="sumbit-btn">Регистрация</button>
+                <!--  Здесь нужно пустое невидимое текстовое поле для вывода текста ошибки !-->
+                {% if error_message %}
+                <h5>{{error_message}}</h5>
+                {% endif %}
+                <!-- Вместо h5 выше. !-->
             </form>
-        </div>
+            </div>
         </div>
         <script>
             var x=document.getElementById("login")
@@ -45,3 +50,4 @@
         </script>
     </body>
 </html>
+
