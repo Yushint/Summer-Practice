@@ -12,7 +12,7 @@ class UsersModel:
         """Инициализация таблицы БД users."""
         cursor = self.connection.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS users 
-                            (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                            (user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              user_name VARCHAR(20) UNIQUE,
                              password_hash VARCHAR(128),
                              email VARCHAR(20),
