@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for, render_template, request
 
 app = Flask(__name__)
 
@@ -10,13 +10,20 @@ def welcome_page_handler():
 def game_news_page_handler():
     pass
 
-@app.route("/authorization")
-def authorization_page_handler():
-    pass
+@app.route("/")
+@app.route("/user_data_forms")
+def user_data_forms():
+    return render_template("index.html")
 
-@app.route("/registration")
-def registration_page_handler():
-    pass
+@app.route("/user_authorization_handler", methods=["GET", "POST"])
+def user_authorization_handler():
+    if request.method == "POST":
+        return request.form
+
+@app.route("/user_registration_handler", methods=["GET", "POST"])
+def user_registration_handler():
+    if request.method == "POST":
+        return request.form
 
 @app.route("/about_us")
 def about_us_page_handler():
