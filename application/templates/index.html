@@ -13,17 +13,17 @@
                     <button type="button" class="toggle-btn" onclick="login()">Вход</button>
                     <button type="button" class="toggle-btn" onclick="register()">Регистрация</button>
                 </div>
-            <form id="login" class="input-group">
-                <input type="text" class="input-field" placeholder="Имя пользователя" required>
-                <input type="text" class="input-field" placeholder="Пароль" required>
-                <input type="checkbox" class="checkbox"> <span>Запомнить пароль</span>
-                <button tipe = "sumbit" class="sumbit-btn">Вход</button>
+            <form action="/user_authorization_handler" method="post" id="login" class="input-group">
+                <input type="text" name="auth-username" class="input-field" placeholder="Имя пользователя" required>
+                <input type="text" name="auth-userpass" class="input-field" placeholder="Пароль" required>
+                <input type="checkbox" name="auth-remember_pass" class="checkbox"><span>Запомнить пароль</span>
+                <button type = "sumbit" class="sumbit-btn">Вход</button>
             </form>
-            <form id="register" class="input-group">
-                <input type="text" class="input-field" placeholder="Имя пользователя" required>
-                <input type="text" class="input-field" placeholder="Пароль" required>
-                <input type="text" class="input-field" placeholder="Почта" required>
-                <button tipe = "sumbit" class="sumbit-btn">Регистрация</button>
+            <form action="/user_registration_handler" method="post" id="register" class="input-group">
+                <input type="text" name="reg-username" class="input-field" placeholder="Имя пользователя" required>
+                <input type="text" name="reg-userpass" class="input-field" placeholder="Пароль" required>
+                <input type="text" name="reg-usermail" class="input-field" placeholder="Почта" required>
+                <button type = "sumbit" class="sumbit-btn">Регистрация</button>
             </form>
         </div>
         </div>
@@ -44,6 +44,4 @@
             }
         </script>
     </body>
-</html
->
-
+</html>
