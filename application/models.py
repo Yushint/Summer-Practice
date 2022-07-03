@@ -36,7 +36,7 @@ class UsersModel:
         cursor = self.connection.cursor()
         cursor.execute('''SELECT * FROM users WHERE user_name = ?''', [user_name])
         user_data = cursor.fetchone()
-        return (True, user_data[2], user_data[0]) if user_data else (False)
+        return (True, user_data[2], user_data[0]) if user_data else (False,)
     
     def get_user(self, user_id):
         """Запрос информации о юзере через уникальный user_id."""
@@ -96,7 +96,7 @@ class ArticlesModel:
         cursor.execute('''SELECT * FROM articles WHERE author = ? AND title = ?''',
                        (str(author), str(title)))
         data = cursor.fetchone()
-        return (True, data[0]) if data else False
+        return (True, data[0]) if data else (False,)
     
     def get_article(self, article_id):
         """Запрос статьи по id."""
