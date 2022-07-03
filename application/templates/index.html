@@ -3,7 +3,11 @@
     <head>
         <meta charset=" UTF-8 ">
         <link rel="stylesheet" href="../static/css/style.css" type="text/css">
-        <title>Регистрация пользователя</title>
+        {% if title %}
+            <title>{{ title }}</title>
+        {% else %}
+            <title>GameNews - Об играх</title>
+        {% endif %}
     </head>
     <body>
         <div class="hero">
@@ -18,17 +22,26 @@
                 <input type="text" name="reg-userpass" class="input-field" placeholder="Пароль" required>
                 <input type="text" name="reg-usermail" class="input-field" placeholder="Почта" required>
                 <button type = "sumbit" class="sumbit-btn">Регистрация</button>
-                <!--  Здесь нужно пустое невидимое текстовое поле для вывода текста ошибки !-->
-                <!--{% if error_message %}!-->
-                <h5 class="error-report">Я немного не понял. Так?</h5>
-                <!--{% endif %}!-->
-                <!-- Вместо h5 выше. !-->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <h5 class="error-report">{{msg}}</h5>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </form>        
             <form action="/user_authorization_handler" method="post" id="login" class="input-group">
                 <input type="text" name="auth-username" class="input-field" placeholder="Имя пользователя" required>
                 <input type="text" name="auth-userpass" class="input-field" placeholder="Пароль" required>
                 <input type="checkbox" name="auth-remember_pass" class="checkbox"><span>Запомнить пароль</span>
                 <button type = "sumbit" class="sumbit-btn">Вход</button>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <h5 class="error-report">{{msg}}</h5>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </form>
             </div>
         </div>
