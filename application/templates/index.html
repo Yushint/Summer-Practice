@@ -10,44 +10,45 @@
             <div class="form-box">
                 <div class="button-box">
                     <div id="btn"></div>
-                    <button type="button" class="toggle-btn" onclick="login()">Вход</button>
                     <button type="button" class="toggle-btn" onclick="register()">Регистрация</button>
+                    <button type="button" class="toggle-btn" onclick="login()">Вход</button>
                 </div>
-            <form action="/user_authorization_handler" method="post" id="login" class="input-group">
-                <input type="text" name="auth-username" class="input-field" placeholder="Имя пользователя" required>
-                <input type="text" name="auth-userpass" class="input-field" placeholder="Пароль" required>
-                <input type="checkbox" name="auth-remember_pass" class="checkbox"><span>Запомнить пароль</span>
-                <button type = "sumbit" class="sumbit-btn">Вход</button>
-            </form>
             <form action="/user_registration_handler" method="post" id="register" class="input-group">
                 <input type="text" name="reg-username" class="input-field" placeholder="Имя пользователя" required>
                 <input type="text" name="reg-userpass" class="input-field" placeholder="Пароль" required>
                 <input type="text" name="reg-usermail" class="input-field" placeholder="Почта" required>
                 <button type = "sumbit" class="sumbit-btn">Регистрация</button>
                 <!--  Здесь нужно пустое невидимое текстовое поле для вывода текста ошибки !-->
-                {% if error_message %}
-                <h5>{{error_message}}</h5>
-                {% endif %}
+                <!--{% if error_message %}!-->
+                <h5 class="error-report">Я немного не понял. Так?</h5>
+                <!--{% endif %}!-->
                 <!-- Вместо h5 выше. !-->
+            </form>        
+            <form action="/user_authorization_handler" method="post" id="login" class="input-group">
+                <input type="text" name="auth-username" class="input-field" placeholder="Имя пользователя" required>
+                <input type="text" name="auth-userpass" class="input-field" placeholder="Пароль" required>
+                <input type="checkbox" name="auth-remember_pass" class="checkbox"><span>Запомнить пароль</span>
+                <button type = "sumbit" class="sumbit-btn">Вход</button>
             </form>
             </div>
         </div>
         <script>
-            var x=document.getElementById("login")
-            var y=document.getElementById("register")
+            var x=document.getElementById("register")
+            var y=document.getElementById("login")
             var z=document.getElementById("btn")
-
-            function register(){
+            
+            function login(){
                 x.style.left = "-650px"
-                y.style.left = "150px"
+                y.style.left = "60px"
                 z.style.left = "110px"
             }
-            function login(){
-                x.style.left = "150px"
+
+            function register(){
+                x.style.left = "60px"
                 y.style.left = "650px"
                 z.style.left = "0px"
+ 
             }
         </script>
     </body>
 </html>
-
