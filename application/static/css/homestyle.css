@@ -5,7 +5,7 @@ body{
     background-color: #7FFFD4;
 }
 
-.dws1 {
+.bruh1 {
     position: absolute;
     top: 25%;
     left: 50%;
@@ -23,7 +23,7 @@ body{
     width: 100%;
     transition: .5s;
 }
-   .dws1:hover .blocImg1 img {
+   .bruh1:hover .blocImg1 img {
     transform: rotate(-10deg) scale(1.3);
     filter: blur(.5px);
     opacity: .5;
@@ -57,7 +57,7 @@ body{
     border-left: 4px solid #ffb611;
     padding: 0 10px;
 }
-   .dws1:hover .text1 {
+   .bruh1:hover .text1 {
     opacity: 1;
 }
    .blocText1::before,
@@ -80,12 +80,12 @@ body{
     border-right: 1px solid #fff;
     transform: scale(1,0);
 }
-   .dws1:hover .blocText1::before,
-   .dws1:hover .blocText1::after{
+   .bruh1:hover .blocText1::before,
+   .dbruh1:hover .blocText1::after{
     transform: scale(1,1);
 }
 
-.dws2 {
+.bruh2 {
     position: absolute;
     top: 75%;
     left: 50%;
@@ -103,7 +103,7 @@ body{
     width: 100%;
     transition: .5s;
 }
-   .dws2:hover .blocImg2 img {
+   .bruh2:hover .blocImg2 img {
     transform: rotate(-10deg) scale(1.3);
     filter: blur(.5px);
     opacity: .5;
@@ -137,7 +137,7 @@ body{
     border-left: 4px solid #ffb611;
     padding: 0 10px;
 }
-   .dws2:hover .text2 {
+   .bruh2:hover .text2 {
     opacity: 1;
 }
    .blocText2::before,
@@ -160,8 +160,8 @@ body{
     border-right: 1px solid #fff;
     transform: scale(1,0);
 }
-   .dws2:hover .blocText2::before,
-   .dws2:hover .blocText2::after{
+   .bruh2:hover .blocText2::before,
+   .bruh2:hover .blocText2::after{
     transform: scale(1,1);
 }
 
