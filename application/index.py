@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template, request, flash, redirect, session
+from flask import Flask, url_for, render_template, request, flash, redirect, session, abort
 from database import DB
 from models import UsersModel
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -14,11 +14,21 @@ app.config["SECRET_KEY"] = "summer_practice_secret_key" # защита cookies
 def logout():
     """Обработчика выхода из системы."""
     session.pop("username", 0)
-    return redirect(url_for("user_data_forms"))
+    return redirect(url_for("user_data_handler"))
+
+@app.route("/user_data_forms")
+@app.route("/")
+def user_data_handler():
+    """Обработчик страницы форм регистрации/авторизации."""
+    if "username" in session:
+        return "Ok" #return redirect to main_page
+    return render_template("index.html", title="Регистрация и авторизация пользователя.")
 
 @app.route("/user_authorization_handler", methods=["GET", "POST"])
 def user_authorization_handler():
     """Обработка запроса на авторизацию."""
+    if "username" in session:
+        return "Ok" #redirect to main_page
     if request.method == "POST":
         user_name = request.form["auth-username"]
         user_password = request.form["auth-userpass"]
@@ -28,11 +38,13 @@ def user_authorization_handler():
             return (user_name) #redirect(url_for(...))
         else:
             flash("Пользователь или пароль неверны.")
-    return redirect(url_for("user_data_forms"))
+    return render_template("index.html", title="Регистрация и авторизация пользователя.")
         
 
 @app.route("/user_registration_handler", methods=["GET", "POST"])
 def user_registration_handler():
+    if "username" in session:
+        return "Ok" #redirect to main_page    
     """Обработка запроса на регистрацию."""
     if request.method == "POST":
         user_name = request.form["reg-username"]
@@ -44,28 +56,45 @@ def user_registration_handler():
         else:
             users_model.insert(user_name, password_hash, email)
             return "Ok" # redirect(url_for(...))
-    return redirect(url_for("user_data_forms"))
+    return render_template("index.html", title="Регистрация и авторизация пользователя.")
 
 @app.route("/game_news")
-def game_news_page_handler():
+def main_page():
     """Обработчик главной страницы."""
-    pass
+    if "username" not in session:
+        return redirect(url_for("user_data_handler"))
+    return "Main Page"
 
-@app.route("/")
-@app.route("/user_data_forms")
-def user_data_forms():
-    """Обработчик страницы форм регистрации/авторизации."""
-    return render_template("index.html", title="Регистрация пользователя.")
+@app.route("/article/<int:article_id>")
+def article_page(article_id):
+    """Обработчик страницы конкретной статьи."""
+    if "username" not in session:
+        return redirect(url_for("user_data_handler"))
+    return str(article_id) # полный адрес через template/url_for
         
-@app.route("/about_us")
-def about_us_page_handler():
-    """Обработка страницы "О нас" """
-    pass
-
 @app.route("/administrator")
-def administrator_page_handler():
+def administrator_page():
     """Обработка страницы администратора."""
-    pass
+    if "username" not in session:
+        return redirect(url_for("user_data_handler"))
+    elif "username" != "admin":
+        abort(401)
+    else:
+        return "Administrator Page"
+
+@app.errorhandler(404)
+def error_404_page(error):
+    """Обработчик ошибки 404.
+       Отсутствие запрашиваемой страницы."""
+    return render_template("error_404.html")
+
+@app.errorhandler(401)
+def error_401_page(error):
+    """Обработчик ошибки 401.
+       Отказ в доступности.
+    """
+    return render_template("error_401.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
