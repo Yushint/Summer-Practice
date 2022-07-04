@@ -19,6 +19,7 @@
     background: #fff;
     padding: 100px;
     overflow: hidden;
+    border-radius: 30px;
 }
 .toggle-btn{
     padding: 10px 30px;
