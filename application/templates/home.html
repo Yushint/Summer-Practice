@@ -2,32 +2,73 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Кодзима гений</title>
+	<title>Home</title>
 	<link rel="stylesheet" type="text/css" href="../static/css/homestyle.css">
+	<audio id="Sound" src="../static/audio/untitled.ogg"></audio>
 </head>
 <body>
-	<section>
-		<div class="bruh1">
-			<div class="blocImg1"><img src="../static/img/Header.jpeg" alt="CSS эффект">
+	<section id="button">
+		<div class="bruh1" id="mydiv">
+			<div class="blocImg1"><img src="../static/img/1.jpg" alt="CSS эффект" >
 				<div class="blocText1">
 					<div class="text1">
-						<h2>Кодзима <span>гений</span></h2>
-						<p>Дед<br> стрендинг<br>ванлав</p>
+						<h2>Русские <span>гении</span></h2>
+						<p>Escape<br> from<br>Tarkov</p>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="bruh2">
-			<div class="blocImg2"><img src="../static/img/1.jpg" alt="CSS эффект">
+			<div class="blocImg2"><img src="../static/img/2.jpg" alt="CSS эффект">
 				<div class="blocText2">
 					<div class="text2">
-						<h2>Русские <span>гении</span></h2>
-						<p>Escape<br> from<br>tarkov</p>
+						<h2>Почему так<span> больно</span></h2>
+						<p>Cuphead<br>бросает тебе <br>вызов</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="bruh3">
+			<div class="blocImg3"><img src="../static/img/3.jpg" alt="CSS эффект">
+				<div class="blocText3">
+					<div class="text3">
+						<h2>Построй горд<span> там где это невозможно</span></h2>
+						<p>RimWorld <br>самый необычный <br>градостроительный симулятор</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="bruh4">
+			<div class="blocImg4"><img src="../static/img/4.jpg" alt="CSS эффект">
+				<div class="blocText4">
+					<div class="text4">
+						<h2>Габен<span> гений</span></h2>
+						<p>или как <br>сделать самую <br>популярную онлайн игру</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="bruh5">
+			<div class="blocImg5"><img src="../static/img/5.jpg" alt="CSS эффект">
+				<div class="blocText5">
+					<div class="text5">
+						<h2>Майнкраф<span> наоборот</span></h2>
+						<p>Почему <br>в это <br>стоит поиграть</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-	<script src="/script.js"></script>
+	<script>
+		let btn = document.getElementById("button");
+
+		btn.addEventListener("mouseenter", function(event) {
+ 			let sound = document.getElementById("Sound");
+  			sound.play();
+		}, false);
+	</script>
 </body>
 </html>
+
+
+<!--onmouseover="document.getElementById('mysound').play()" onmouseout="document.getElementById('mysound').stop()"
