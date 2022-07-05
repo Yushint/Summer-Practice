@@ -81,7 +81,7 @@ body{
     transform: scale(1,0);
 }
    .bruh1:hover .blocText1::before,
-   .dbruh1:hover .blocText1::after{
+   .bruh1:hover .blocText1::after{
     transform: scale(1,1);
 }
 
