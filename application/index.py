@@ -1,13 +1,15 @@
 from flask import Flask, url_for, render_template, request, flash, redirect, session, abort
 from database import DB
-from models import UsersModel
+from models import UsersModel, ArticlesModel
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 db = DB()
 UsersModel(db.get_connection()).initialize_table()
+ArticlesModel(db.get_connection()).initialize_table()
+
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "summer_practice_secret_key" # защита cookies
+app.config["SECRET_KEY"] = "summer_practice_secret_key" # защита cookies и session
 
 
 @app.route("/logout")
@@ -21,21 +23,21 @@ def logout():
 def user_data_handler():
     """Обработчик страницы форм регистрации/авторизации."""
     if "username" in session:
-        return "Ok" #return redirect to main_page
+        return redirect(url_for("main_page"))
     return render_template("index.html", title="Регистрация и авторизация пользователя.")
 
 @app.route("/user_authorization_handler", methods=["GET", "POST"])
 def user_authorization_handler():
     """Обработка запроса на авторизацию."""
     if "username" in session:
-        return "Ok" #redirect to main_page
+        return redirect(url_for("main_page"))
     if request.method == "POST":
         user_name = request.form["auth-username"]
         user_password = request.form["auth-userpass"]
         users_model = UsersModel(db.get_connection())
         if users_model.is_user_exists(user_name)[0] and check_password_hash(users_model.is_user_exists(user_name)[1], user_password):
             session["username"] = user_name
-            return (user_name) #redirect(url_for(...))
+            return redirect(url_for("main_page"))
         else:
             flash("Пользователь или пароль неверны.")
     return render_template("index.html", title="Регистрация и авторизация пользователя.")
@@ -44,7 +46,7 @@ def user_authorization_handler():
 @app.route("/user_registration_handler", methods=["GET", "POST"])
 def user_registration_handler():
     if "username" in session:
-        return "Ok" #redirect to main_page    
+        return redirect(url_for("main_page"))   
     """Обработка запроса на регистрацию."""
     if request.method == "POST":
         user_name = request.form["reg-username"]
@@ -55,7 +57,8 @@ def user_registration_handler():
             flash("Ошибка. Пользователь с таким именем уже существует.")
         else:
             users_model.insert(user_name, password_hash, email)
-            return "Ok" # redirect(url_for(...))
+            session["username"] = user_name
+            return redirect(url_for("main_page"))
     return render_template("index.html", title="Регистрация и авторизация пользователя.")
 
 @app.route("/game_news")
@@ -63,14 +66,22 @@ def main_page():
     """Обработчик главной страницы."""
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
-    return "Main Page"
+    articles_model = ArticlesModel(db.get_connection())
+    articles_model.insert(author="Matvey", title="Русские гении.", key_theme="Escape form Tarkov", text="None", image="static/img/1.jpg")
+    articles_model.insert(author="Matvey", title="Почему так больно?", key_theme="Cuphead", text="None", image="static/img/2.jpg")
+    articles_model.insert(author="Matvey", title="Построй город там, где это невозможно.", key_theme="RimWorld", text="None", image="static/img/3.jpg")
+    articles_model.insert(author="Matvey", title="Габен - гений!", key_theme="TeamFortress", text="None", image="static/img/4.jpg")
+    articles_model.insert(author="Matvey", title="Майнкрафт наоборот.", key_theme="Minecraft", text="None", image="static/img/5.jpg")    
+    articles_list = articles_model.get_all_articles()
+    #id[0] author[1] title[2] key_theme[3] text[4] image[5]
+    return render_template("home.html", articles=articles_list)
 
 @app.route("/article/<int:article_id>")
 def article_page(article_id):
     """Обработчик страницы конкретной статьи."""
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
-    return str(article_id) # полный адрес через template/url_for
+    return str(article_id)
         
 @app.route("/administrator")
 def administrator_page():
