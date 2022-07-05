@@ -1,6 +1,19 @@
 """ Модуль для программирования обработки моделей юзера/статей через базу данных
     SQLite. Две модели, с которой работаем --> UsersModel, ArticlesModel.
 """
+from time import time
+from math import floor
+
+
+#def convert_data_to_binary_type(datafile):
+    #with open(datafile, "rb") as binary_file:
+        #binary_data = binary_file.read()
+    #return binary_data
+
+#def convert_data_to_normal_type(data, datafile):
+    #with open(datafile, "wb") as normal_file:
+        #normal_file.write(data)
+
 
 class UsersModel:
     """Класс описания информационной модели юзера сайта."""
@@ -74,19 +87,21 @@ class ArticlesModel:
                             (article_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              author VARCHAR(20),
                              title VARCHAR(30),
-                             key_theme VARCHAR(30),
-                             text VARCHAR(256),
-                             rating INTEGER)''')
+                             key_theme NOT NULL,
+                             text TEXT NOT NULL,
+                             image TEXT NOT NULL,
+                             time INTEGER NOT NULL)''')
         cursor.close()
         self.connection.commit()
         
-    def insert(self, author, title, key_theme, text, rating):
+    def insert(self, author, title, key_theme, text, image):
         """Вставка инфо в БД."""
+        adding_time = floor(time())
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO articles
-                          (author, title, key_theme, text, rating) 
-                          VALUES (?,?,?,?,?)''',
-                       (str(author), str(title), str(key_theme), str(text), str(rating)))
+                          (author, title, key_theme, text, image, time) 
+                          VALUES (?,?,?,?,?,?)''',
+                       (str(author), str(title), str(key_theme), str(text), str(image),  adding_time))
         cursor.close()
         self.connection.commit()
         
@@ -101,15 +116,15 @@ class ArticlesModel:
     def get_article(self, article_id):
         """Запрос статьи по id."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles WHERE article_id = ?''', str(article_id))
+        cursor.execute('''SELECT article_id, author, title, key_theme, text, image FROM articles WHERE article_id = ?''', str(article_id))
         data = cursor.fetchone()
         return data
     
     def get_all_articles(self):
         """Запрос всех статей."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles''')
-        data = cursor.fetchall()
+        cursor.execute('''SELECT article_id, author, title, key_theme, text, image FROM articles ORDER BY time DESC''')
+        data = cursor.fetchmany(5)
         return data
     
     def delete_article(self, article_id):
@@ -122,20 +137,20 @@ class ArticlesModel:
     def get_article_by_author(self, author):
         """Запрос статьи по автору."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles WHERE author = ?''', (str(author),))
+        cursor.execute('''SELECT article_id, author, title, key_theme, text, image FROM articles WHERE author = ?''', (str(author),))
         data = cursor.fetchall()
         return data
     
     def get_article_by_key_theme(self, key_theme):
         """Запрос статьи по ключевой теме."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles WHERE key_theme = ?''', str(key_theme))
+        cursor.execute('''SELECT article_id, author, title, key_theme, text, image FROM articles WHERE key_theme = ?''', str(key_theme))
         data = cursor.fetchall()
         return data
     
     def get_article_by_rating(self, start_rating, end_rating):
         """Запрос статьи по рейтингу."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles WHERE rating >= ? AND rating <= ?''', (str(start_rating), str(end_rating)))
+        cursor.execute('''SELECT article_id, author, title, key_theme, text, image FROM articles WHERE rating >= ? AND rating <= ?''', (str(start_rating), str(end_rating)))
         data = cursor.fetchall()
         return data
