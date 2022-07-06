@@ -2,11 +2,33 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Home</title>
 	<link rel="stylesheet" type="text/css" href="../static/css/homestyle.css">
 	<audio id="Sound" src="../static/audio/untitled.ogg"></audio>
 </head>
 <body>
+    <header class="header">
+		<nav class="navbar">
+			<a href="#" class="logo">GameNews</a>
+			<ul class="menu">
+				<li class="item">
+					<a href="#" class="link">Статьи</a>
+				</li>
+				<li class="item">
+					<a href="#" class="link">Чат с поддержкой</a>
+				</li>
+				<li class="item">
+					<a href="#" class="link">Выход</a>
+				</li>
+			</ul>
+			<div class="hamb">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</div>
+		</nav>
+	</header>
 	<section id="button">
 		<div class="bruh1" id="mydiv">
 			<div class="blocImg1"><img src="{{articles[0][5]}}" alt="CSS эффект" >
@@ -77,6 +99,7 @@
   			sound.play();
 		}, false);
 	</script>
+    <script  type="text/javascript" src="../static/js/script.js"></script>
 </body>
 </html>
 
