@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Home</title>
-	<link rel="stylesheet" type="text/css" href="../static/css/homestyle.css">
+	<link rel="stylesheet" type="text/css" href="../static/css/home-light-mode.css" id="theme">
 	<audio id="Sound" src="../static/audio/untitled.ogg"></audio>
 </head>
 <body>
@@ -17,6 +17,9 @@
 				</li>
 				<li class="item">
 					<a href="#" class="link">Чат с поддержкой</a>
+				</li>
+				<li class="item">
+					<a href="#" class="link" id="switchMode">Смена темы</a>
 				</li>
 				<li class="item">
 					<a href="#" class="link">Выход</a>
@@ -100,8 +103,6 @@
 		}, false);
 	</script>
     <script  type="text/javascript" src="../static/js/script.js"></script>
+	<script type="text/javascript" src="../static/js/switchmode.js"></script>
 </body>
 </html>
-
-
-<!--onmouseover="document.getElementById('mysound').play()" onmouseout="document.getElementById('mysound').stop()"
