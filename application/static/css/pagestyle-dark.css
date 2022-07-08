@@ -113,7 +113,7 @@ a{
     transition: 1s;
 }
 .text{
-    text-align: center;
+    text-align: justify;
     padding: 10px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
