@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask, url_for, render_template, request, flash, redirect, session, abort
 from database import DB
 from models import UsersModel, ArticlesModel
 from werkzeug.security import generate_password_hash, check_password_hash
+from AdministratorNewsletterHandler import AdministratorNewsletter
 
 
 db = DB()
@@ -24,7 +27,7 @@ def user_data_handler():
     """Обработчик страницы форм регистрации/авторизации."""
     if "username" in session:
         return redirect(url_for("main_page"))
-    return render_template("index.html", title="Регистрация и авторизация пользователя.")
+    return render_template("index.html", title="GameNews - Авторизация.")
 
 @app.route("/user_authorization_handler", methods=["GET", "POST"])
 def user_authorization_handler():
@@ -50,13 +53,22 @@ def user_registration_handler():
     """Обработка запроса на регистрацию."""
     if request.method == "POST":
         user_name = request.form["reg-username"]
-        password_hash = generate_password_hash(request.form["reg-userpass"], "sha256")
-        email = request.form["reg-usermail"]
+        user_password = request.form["reg-userpass"]
+        user_email = request.form["reg-usermail"]
+        password_hash = generate_password_hash(user_password, "sha256")
         users_model = UsersModel(db.get_connection())
         if user_name in [user[1] for user in users_model.get_all_users()]:
             flash("Ошибка. Пользователь с таким именем уже существует.")
         else:
-            users_model.insert(user_name, password_hash, email)
+            try:
+                email_title="Благодарим за регистрацию на сайте GameNews!"
+                email_text=f"""Ваш username: {user_name}.\nВаш пароль: {user_password}."""
+                admin_newsletter = AdministratorNewsletter(email_title, email_text)
+                admin_newsletter.define_newsletter_message()
+                admin_newsletter.send_newsletter_message([user_email])
+            except Exception:
+                pass
+            users_model.insert(user_name, password_hash, user_email)
             session["username"] = user_name
             return redirect(url_for("main_page"))
     return render_template("index.html", title="Регистрация и авторизация пользователя.")
@@ -67,21 +79,18 @@ def main_page():
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
     articles_model = ArticlesModel(db.get_connection())
-    articles_model.insert(author="Matvey", title="Русские гении.", key_theme="Escape form Tarkov", text="None", image="static/img/1.jpg")
-    articles_model.insert(author="Matvey", title="Почему так больно?", key_theme="Cuphead", text="None", image="static/img/2.jpg")
-    articles_model.insert(author="Matvey", title="Построй город там, где это невозможно.", key_theme="RimWorld", text="None", image="static/img/3.jpg")
-    articles_model.insert(author="Matvey", title="Габен - гений!", key_theme="TeamFortress", text="None", image="static/img/4.jpg")
-    articles_model.insert(author="Matvey", title="Майнкрафт наоборот.", key_theme="Minecraft", text="None", image="static/img/5.jpg")    
-    articles_list = articles_model.get_all_articles()
+    articles_list = articles_model.get_all_articles(amount=5)
     #id[0] author[1] title[2] key_theme[3] text[4] image[5]
-    return render_template("home.html", articles=articles_list)
+    return render_template("home.html", articles=articles_list, title="GameNews - Статьи")
 
 @app.route("/article/<int:article_id>")
 def article_page(article_id):
     """Обработчик страницы конкретной статьи."""
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
-    return str(article_id)
+    articles_model = ArticlesModel(db.get_connection())
+    current_article = articles_model.get_article(article_id)
+    return render_template("page1.html", article=current_article) # позже берём статью по уникальному id или url и рендерим.
         
 @app.route("/administrator")
 def administrator_page():
