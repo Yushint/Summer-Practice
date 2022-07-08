@@ -68,7 +68,7 @@ class UsersModel:
     def delete_user(self, user_id):
         """Удаление юзера по его уникальному user_id."""
         cursor = self.connection.cursor()
-        cursor.execute('''DELETE FROM users WHERE user_id = ?''', [user_id])
+        cursor.execute('''DELETE * FROM users WHERE user_id = ?''', [user_id])
         cursor.close()
         self.connection.commit()
 
