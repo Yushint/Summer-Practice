@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block meta %}
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock %}
+    {% block title %}
+    	{% if title %}
+			<title>{{title}}</title>
+		{% else %}
+			<title>GameNews - Статьи</title>
+		{% endif %}
+	{% endblock %}
+	{% block connected_resources %}
+	<link rel="stylesheet" type="text/css" href="../static/css/base.css">
+	<link rel="stylesheet" type="text/css" href="../static/css/home-light-mode.css" id="theme">
+	{% endblock %}
+</head>
+<body>
+    <header class="header">
+		<nav class="navbar">
+			<a href="{{url_for('main_page')}}" class="logo">GameNews</a>
+			<ul class="menu">
+				<li class="item">
+					<a href="{{url_for('main_page')}}" class="link">Статьи</a>
+				</li>
+				<li class="item">
+					<a href="https://t.me/+EcMm69_lprY1ZDgy" class="link">Чат с поддержкой</a>
+				</li>
+				<li class="item">
+					<a href="#" class="link" id="switchMode">Смена темы</a>
+				</li>
+				<li class="item">
+					<a href="{{url_for('logout')}}" class="link">Выход</a>
+				</li>
+			</ul>
+			<div class="hamb">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</div>
+		</nav>
+	</header>
+	{% block content %}
+	{% endblock %}
+</body>
+</html>
