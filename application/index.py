@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import os
 from flask import Flask, url_for, render_template, request, flash, redirect, session, abort
 from database import DB
 from models import UsersModel, ArticlesModel
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from AdministratorNewsletterHandler import AdministratorNewsletter
 
 
@@ -11,9 +13,14 @@ db = DB()
 UsersModel(db.get_connection()).initialize_table()
 ArticlesModel(db.get_connection()).initialize_table()
 
+IMAGE_FOLDER = './static/img'
+ALLOWED_IMAGE_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+def is_file_allowed(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "summer_practice_secret_key" # защита cookies и session
-
+app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 
 @app.route("/logout")
 def logout():
@@ -90,17 +97,65 @@ def article_page(article_id):
         return redirect(url_for("user_data_handler"))
     articles_model = ArticlesModel(db.get_connection())
     current_article = articles_model.get_article(article_id)
-    return render_template("page1.html", article=current_article) # позже берём статью по уникальному id или url и рендерим.
+    #id[0] author[1] title[2] key_theme[3] text[4] image_preview[5] image_top[6] image_bottom[7]
+    return render_template("page.html", article=current_article) # позже берём статью по уникальному id или url и рендерим.
+    
         
 @app.route("/administrator")
 def administrator_page():
     """Обработка страницы администратора."""
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
-    elif "username" != "admin":
+    elif session["username"] != "admin": #session_is_admin
         abort(401)
     else:
-        return "Administrator Page"
+        return render_template("admin.html")
+    
+@app.route("/administrator/add_article", methods=["GET", "POST"])
+def admin_add_article():
+    """Обработка запроса на добавление статьи. Обработка форм."""
+    if "username" not in session:
+        return redirect(url_for("user_data_handler"))
+    elif session["username"] != "admin":
+        abort(401)
+    else:
+        if request.method == "POST":
+            article_author = request.form["article_author"]
+            article_title = request.form["article_title"]
+            article_key_theme = request.form["article_key_theme"]
+            article_text = request.form["article_text"]
+            article_preview_image = request.files["article_preview_image"]
+            article_header_image = request.files["article_header_image"]
+            article_bottom_image = request.files["article_bottom_image"]
+            if is_file_allowed(article_preview_image.filename):
+                filename = secure_filename(article_preview_image.filename)
+                preview_link = os.path.join(app.config['IMAGE_FOLDER'], filename)
+                article_preview_image.save(preview_link)
+            else:
+                flash("Выберите файл(ы) формата png, jpg или jpeg.", "error")
+                return redirect(url_for("administrator_page"))
+            if is_file_allowed(article_header_image.filename):
+                filename = secure_filename(article_header_image.filename)
+                header_link = os.path.join(app.config['IMAGE_FOLDER'], filename)
+                article_header_image.save(header_link)
+            else:
+                flash("Выберите файл(ы) формата png, jpg или jpeg.", "error")
+                return redirect(url_for("administrator_page"))
+            if is_file_allowed(article_bottom_image.filename):
+                filename = secure_filename(article_bottom_image.filename)
+                bottom_link = os.path.join(app.config['IMAGE_FOLDER'], filename)
+                article_bottom_image.save(bottom_link)
+            else:
+                flash("Выберите файл(ы) формата png, jpg или jpeg.", "error")
+                return redirect(url_for("administrator_page"))
+            preview_link = '.' + preview_link
+            header_link = '.' + header_link
+            bottom_link = '.' + bottom_link
+            articles_model = ArticlesModel(db.get_connection())
+            articles_model.insert(article_author, article_title, article_key_theme, article_text,
+                                  preview_link, header_link, bottom_link)
+            flash("Статья успешно добавлена.", "success")
+    return redirect(url_for("administrator_page"))
 
 @app.errorhandler(404)
 def error_404_page(error):
