@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block meta %}
+	{{ super() }}
+{% endblock %}
+
+{% block title %}
+	<title>GameNews - Администратор.</title>
+{% endblock %}
+
+{% block connected_resources %}
+	{{ super() }}
+	<link rel="stylesheet" href="../static/css/administrator.css">
+{% endblock %}
+
+{% block content %}
+	{% for cat, message in get_flashed_messages(True) %}
+		<div class="flash {{cat}}">{{message}}</div>
+	{% endfor %}
+	<form action="{{url_for('admin_add_article')}}" method="post" class="form-articles" enctype="multipart/form-data">
+		<p><label>Автор статьи: </label> <input type="text" name="article_author" value="" required /></p>
+		<p><label>Название статьи: </label> <input type="text" name="article_title" value="" required /></p>
+		<p><label>Класс статьи: </label> <input type="text" name="article_key_theme" value="" required /></p>
+		<p><label>Текст статьи: </label></p>
+		<p><<textarea name="article_text" rows="7" cols="40"></textarea></p>
+		<p><label>Превью статьи: </label> <input type="file" name="article_preview_image" required></p>
+		<p><label>Верхнее изображение: </label> <input type="file" name="article_header_image" required></p>
+		<p><label>Нижнее изображение: </label> <input type="file" name="article_bottom_image" required></p>
+		<p><input type="submit" value="Добавить" /></p>
+	</form>
+	<script src="../static/js/script.js"></script>
+    <script src="../static/js/switchpage.js"></script>
+{% endblock %}
+
