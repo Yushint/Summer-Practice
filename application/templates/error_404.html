@@ -10,7 +10,7 @@
 
 {% block content %}
 	<center><h1>Запрашиваемая страница не найдена.</h1></center>
-	<center><img src="static/img/error_404.jpg" alt="404 image"></center>
+	<center><img src="{{ url_for('static', filename='img/error_404.jpg') }}" alt="404 image"></center>
 	<script  type="text/javascript" src="../static/js/script.js"></script>
 	<script type="text/javascript" src="../static/js/switchmode.js"></script>
 {% endblock %}
