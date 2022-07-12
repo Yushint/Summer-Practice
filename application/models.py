@@ -19,18 +19,19 @@ class UsersModel:
                              user_name VARCHAR(20) UNIQUE,
                              password_hash VARCHAR(128),
                              email VARCHAR(20),
-                             is_admin INTEGER
+                             is_admin INTEGER,
+                             avatar TEXT NOT NULL
                              )''')
         cursor.close()
         self.connection.commit()
         
-    def insert(self, user_name, password_hash, email, is_admin=False):
+    def insert(self, user_name, password_hash, email, is_admin=False, avatar="../static/img\default.png"):
         """Вставка информации о юзере в БД."""
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO users 
-                          (user_name, password_hash, email, is_admin) 
-                          VALUES (?,?,?,?)''',
-                       (user_name, password_hash, email, int(is_admin)))
+                          (user_name, password_hash, email, is_admin, avatar) 
+                          VALUES (?,?,?,?,?)''',
+                       (user_name, password_hash, email, int(is_admin), avatar))
         cursor.close()
         self.connection.commit()
         
@@ -48,6 +49,13 @@ class UsersModel:
         user_data = cursor.fetchone()
         return user_data
     
+    def get_user_id(self, user_name):
+        """Получение id пользователя по уникальному имени."""
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT user_id FROM users WHERE user_name = ?''', [user_name])
+        user_id = cursor.fetchone()
+        return str(user_id[0])
+    
     def get_all_users(self):
         """Запрос всей инфы о всех юзерах в БД."""
         cursor = self.connection.cursor()
@@ -61,17 +69,26 @@ class UsersModel:
         cursor.execute('''DELETE FROM users WHERE user_id = ?''', [user_id])
         cursor.close()
         self.connection.commit()
+        
+    def set_avatar(self, user_id, avatar):
+        """ Обновление аватара пользователя. """
+        cursor = self.connection.cursor()
+        cursor.execute('''UPDATE users SET avatar = ? WHERE user_id = ?''', (avatar, user_id))
+        cursor.close()
+        self.connection.commit()
 
 
 class ArticlesModel:
     """Класс описания информационной модели статьи. Доработать вечером
        после тестов модели юзера.
-       Модель: автор, заголовок, ключевая тема, текст, рейтинг."""
+       Модель: автор, заголовок, ключевая тема, текст, превью, 
+       верхнее и нижнее изображения, время добавления.
+    """
     def __init__(self, connection):
         self.connection = connection
         
     def initialize_table(self):
-        """Инициализация таблиц БД."""
+        """Инициализация таблиц БД articles."""
         cursor = self.connection.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS articles
                             (article_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -97,11 +114,10 @@ class ArticlesModel:
         cursor.close()
         self.connection.commit()
         
-    def is_article_exists(self, author, title):
+    def is_article_exists(self, article_id):
         """Проверка существования статьи по автору и заголовку."""
         cursor = self.connection.cursor()
-        cursor.execute('''SELECT * FROM articles WHERE author = ? AND title = ?''',
-                       (str(author), str(title)))
+        cursor.execute('''SELECT * FROM articles WHERE article_id = ?''', [article_id])
         data = cursor.fetchone()
         return (True, data[0]) if data else (False,)
     
@@ -149,3 +165,49 @@ class ArticlesModel:
         cursor.execute('''SELECT article_id, author, title, key_theme, text, preview_image, header_image, bottom_image FROM articles WHERE rating >= ? AND rating <= ?''', (str(start_rating), str(end_rating)))
         data = cursor.fetchall()
         return data
+    
+
+class SelectedArticlesModel:
+    """ Модель избранных статей пользователя. """
+    def __init__(self, connection):
+        self.connection = connection
+        
+    def initialize_table(self):
+        """Инициализация таблицы БД selected_articles."""
+        cursor = self.connection.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS selected_articles 
+                            (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                             host_user_id INTEGER, 
+                             selected_article_id INTEGER)''')
+        cursor.close()
+        self.connection.commit()
+        
+    def insert(self, host_user_id, selected_article_id):
+        """ Добавление статьи в избранное. """
+        cursor = self.connection.cursor()
+        cursor.execute('''INSERT INTO selected_articles (host_user_id, selected_article_id) VALUES (?, ?)''', (int(host_user_id), int(selected_article_id)))
+        cursor.close()
+        self.connection.commit()
+        
+    def is_selected_article_exists(self, host_user_id, selected_article_id):
+        """ Проверка наличия статьи в избранном. """
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT * FROM selected_articles WHERE host_user_id = ? AND selected_article_id = ?''', (host_user_id, selected_article_id))
+        data = cursor.fetchone()
+        return (True, data[1]) if data else (False,)
+        
+    def get_selected_articles_id(self, host_user_id):
+        """ Получение id всех избранных статей. """
+        cursor = self.connection.cursor()
+        cursor.execute('''SELECT selected_article_id FROM selected_articles WHERE host_user_id = ?''', [host_user_id])
+        selected_articles_id_data = cursor.fetchall()
+        data = [tuple_id[0] for tuple_id in selected_articles_id_data]
+        return data
+    
+    def delete_selected_article(self, selected_article_id):
+        """ Удаление статьи из избранного по её id. """
+        cursor = self.connection.cursor()
+        cursor.execute('''DELETE * FROM selected_articles WHERE selected_article_id = ?''', [selected_article_id])
+        cursor.close()
+        self.connection.commit()
+        
