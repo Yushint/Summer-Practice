@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+import datetime
 from flask import Flask, url_for, render_template, request, flash, redirect, session, abort
 from database import DB
-from models import UsersModel, ArticlesModel
+from models import UsersModel, ArticlesModel, SelectedArticlesModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from AdministratorNewsletterHandler import AdministratorNewsletter
@@ -12,20 +13,25 @@ from AdministratorNewsletterHandler import AdministratorNewsletter
 db = DB()
 UsersModel(db.get_connection()).initialize_table()
 ArticlesModel(db.get_connection()).initialize_table()
+SelectedArticlesModel(db.get_connection()).initialize_table()
+
 
 IMAGE_FOLDER = './static/img'
 ALLOWED_IMAGE_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def is_file_allowed(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "summer_practice_secret_key" # защита cookies и session
 app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
+app.permanent_session_lifetime = datetime.timedelta(days=5)
+
 
 @app.route("/logout")
 def logout():
     """Обработчика выхода из системы."""
-    session.pop("username", 0)
+    session.clear()
     return redirect(url_for("user_data_handler"))
 
 @app.route("/user_data_forms")
@@ -44,9 +50,14 @@ def user_authorization_handler():
     if request.method == "POST":
         user_name = request.form["auth-username"]
         user_password = request.form["auth-userpass"]
+        remember_me = True if request.form.get("auth-remember_pass") else False
         users_model = UsersModel(db.get_connection())
         if users_model.is_user_exists(user_name)[0] and check_password_hash(users_model.is_user_exists(user_name)[1], user_password):
             session["username"] = user_name
+            session["userid"] = users_model.get_user_id(user_name)
+            session["usermail"] = users_model.get_user(session["userid"])[3]
+            if remember_me:
+                session.permanent = True
             return redirect(url_for("main_page"))
         else:
             flash("Пользователь или пароль неверны.")
@@ -87,8 +98,63 @@ def main_page():
         return redirect(url_for("user_data_handler"))
     articles_model = ArticlesModel(db.get_connection())
     articles_list = articles_model.get_all_articles(amount=5)
-    #id[0] author[1] title[2] key_theme[3] text[4] image[5]
     return render_template("home.html", articles=articles_list, title="GameNews - Статьи")
+
+@app.route("/profile/<string:username>")
+def profile_page(username):
+    """ Обработчик страницы профиля пользователя. """
+    if "username" not in session:
+        return redirect(url_for("user_data_handler"))
+    users_model = UsersModel(db.get_connection())
+    selected_articles_model = SelectedArticlesModel(db.get_connection())
+    articles_model = ArticlesModel(db.get_connection())
+    if users_model.is_user_exists(username)[0]:
+        if session["username"] != username:
+            abort(401)        
+        user_id = users_model.get_user_id(username)
+        user_info = users_model.get_user(user_id)
+        selected_articles_list = selected_articles_model.get_selected_articles_id(user_id)
+        articles = []
+        for element in selected_articles_list:
+            articles.append(articles_model.get_article(element))
+            #user_name[1], password_hash[2], email[3], is_admin[4], avatar[5] 
+        return render_template("profile.html", articles=articles, user=user_info) # render_template("profile")
+    else:
+        abort(404)
+        
+@app.route("/avatar_changing", methods=["GET", "POST"])
+def profile_avatar_changing():
+    if "username" not in session:
+        return redirect(url_for("user_data_handler"))
+    if request.method == "POST":
+        profile_avatar = request.files["user_avatar"]
+        if is_file_allowed(profile_avatar.filename):
+            filename = secure_filename(profile_avatar.filename)
+            avatar_link = os.path.join(app.config['IMAGE_FOLDER'], filename)
+            profile_avatar.save(avatar_link)
+        else:
+            flash("Выберите файл(ы) формата png, jpg или jpeg.", "error")
+            return redirect(url_for("profile_page", username=session["username"]))
+        avatar_link = '.' + avatar_link
+        users_model = UsersModel(db.get_connection())
+        user_id = users_model.get_user_id(session["username"])
+        users_model.set_avatar(user_id, avatar_link)
+        flash("Аватар успешно изменён.", "success")
+    return redirect(url_for("profile_page", username=session["username"]))
+        
+    
+@app.route("/article/select_article/<int:selection_id>", methods=["GET", "POST"])
+def article_selection_handler(selection_id):
+    """ Обработчки добавления статьи в избранное."""
+    if request.method == "POST":
+        selected_articles_model = SelectedArticlesModel(db.get_connection())
+        users_model = UsersModel(db.get_connection())
+        if selected_articles_model.is_selected_article_exists(users_model.get_user_id(session["username"]), selection_id)[0]:
+            flash("Статья в избранном.", "success")
+        else:
+            selected_articles_model.insert(users_model.get_user_id(session["username"]), selection_id)
+            flash("Статья в избранном.", "success")
+    return redirect(url_for("article_page", article_id=selection_id))
 
 @app.route("/article/<int:article_id>")
 def article_page(article_id):
@@ -96,24 +162,26 @@ def article_page(article_id):
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
     articles_model = ArticlesModel(db.get_connection())
-    current_article = articles_model.get_article(article_id)
-    #id[0] author[1] title[2] key_theme[3] text[4] image_preview[5] image_top[6] image_bottom[7]
-    return render_template("page.html", article=current_article) # позже берём статью по уникальному id или url и рендерим.
+    if articles_model.is_article_exists(article_id)[0]:
+        current_article = articles_model.get_article(article_id)
+        return render_template("page.html", article=current_article) # позже берём статью по уникальному id или url и рендерим.
+    else:
+        abort(404) #sqlite3 exception.
+        #id[0] author[1] title[2] key_theme[3] text[4] image_preview[5] image_top[6] image_bottom[7]
     
-        
 @app.route("/administrator")
 def administrator_page():
     """Обработка страницы администратора."""
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
-    elif session["username"] != "admin": #session_is_admin
+    elif session["username"] != "admin":
         abort(401)
     else:
         return render_template("admin.html")
     
 @app.route("/administrator/add_article", methods=["GET", "POST"])
 def admin_add_article():
-    """Обработка запроса на добавление статьи. Обработка форм."""
+    """ Обработчик добавления новой статьи администратором. """
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
     elif session["username"] != "admin":
