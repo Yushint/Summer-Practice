@@ -113,7 +113,7 @@ a{
     transition: 1s;
 }
 .text{
-    text-align: justify;
+    text-align: center;
     padding: 10px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
@@ -141,6 +141,25 @@ a{
     border-radius: 30px;
     transition: 1s;
 }
+.likeit{
+    widows: 85%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    background-color: #ADFF2F;
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    transition: 1s;
+}
+input[value="В избранное"]{
+    color: black;
+    padding: 10px;
+    transition: 1s;
+}
+
+​
+{}
 @media screen and (max-width: 1100px){
     .idonnow1{
         height: auto;
