@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>GameNews - 404.</title>
+	<title>GameNews - 401.</title>
 {% endblock %}
 
 {% block connected_resources %}
@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block content %}
-	<center><h1>Запрашиваемая страница не найдена.</h1></center>
-	<center><img src="{{ url_for('static', filename='img/error_404.jpg') }}" alt="404 image"></center>
+	<center><h1>Отказ в доступе к запрашиваемой странице.</h1></center>
+	<center><img src="{{ url_for('static', filename='img/error_401.jpg') }}" alt="401 image"></center>
 	<script  type="text/javascript" src="../static/js/script.js"></script>
 	<script type="text/javascript" src="../static/js/switchmode.js"></script>
 {% endblock %}
