@@ -1,0 +1,85 @@
+html, body{
+	font-family: 'Arial';
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+a{
+	color: #0059b2;
+	text-decoration: none;
+}
+
+a.hover{
+	color: #CC0000;
+	text-decoration: underline;
+}
+
+.clear {clear: both;}
+
+.flash {padding: 10px;}
+.flash.success {
+	border: 1px solid #21DB56;
+	background: #AEFFC5;
+}
+.flash.error {
+	border: 1px solid #FF4343;
+	background: #FF9C9C;
+}
+
+ul.selected_articles{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	max-height: 600px;
+}
+
+ul.selected_articles li{
+	margin: 20px 0 0 0;
+	border: 1px solid #eee;
+}
+
+ul.selected_articles .article_title{
+	margin: 0;
+	padding: 5px;
+	background: #eee;
+}
+
+ul.selected_articles .article_announce{
+	margin: 0;
+	padding: 10px 5px 10px 5px;
+}
+
+.profile_avatar {
+	width: 150px;
+	height: 150px;
+	text-align: center;
+	overflow: hidden; 
+	background: #eee;
+	padding: 10px;
+}
+.profile_avatar img {max-width: 150px; max-height: 150px; height: auto;}
+
+.profile_load {
+	margin-top: 10px;
+	overflow: hidden;
+	max-width: 150px;
+}
+.profile_load input[type=submit], input[type=file] {
+	width: 100%;
+	font-size: 18px;
+}
+.profile_load p {
+	padding: 0;
+	margin: 5px 0 0 0;
+}
+
+.profile_panel {padding: 0 0 0 10px;}
+ul.profile_info {
+	list-style: none;
+	margin: 10px 0 0 0;
+	padding: 0;
+	color: #7E652F;
+}
+ul.profile_info li {margin-top: 10px;}
