@@ -21,6 +21,14 @@
             <img class="idonnow1" src="{{article[6]}}" alt="first">
         </center>  
         <div class="box">
+        	{% for cat, message in get_flashed_messages(True) %}
+				<div class="flash {{cat}}">{{message}}</div>
+			{% endfor %}
+			<!-- Кнопка -->
+        	<form action="{{ url_for('article_selection_handler', selection_id=article[0]) }}" method="post">
+        		<p><input type="submit" value="В избранное"></p>
+        	</form>
+        	<!-- -->
             <h1 class="head">{{article[3]}}</h1>
             <p class="text">
             	{{article[4]}}
