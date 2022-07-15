@@ -159,13 +159,6 @@ class ArticlesModel:
         data = cursor.fetchall()
         return data
     
-    def get_article_by_rating(self, start_rating, end_rating):
-        """Запрос статьи по рейтингу."""
-        cursor = self.connection.cursor()
-        cursor.execute('''SELECT article_id, author, title, key_theme, text, preview_image, header_image, bottom_image FROM articles WHERE rating >= ? AND rating <= ?''', (str(start_rating), str(end_rating)))
-        data = cursor.fetchall()
-        return data
-    
 
 class SelectedArticlesModel:
     """ Модель избранных статей пользователя. """
