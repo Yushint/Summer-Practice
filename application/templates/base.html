@@ -13,6 +13,7 @@
 		{% endif %}
 	{% endblock %}
 	{% block connected_resources %}
+	<link rel="icon" href="../static/img/icon.svg">
 	<link rel="stylesheet" type="text/css" href="../static/css/base.css">
 	<link rel="stylesheet" type="text/css" href="../static/css/home-light-mode.css" id="theme">
 	{% endblock %}
@@ -22,6 +23,9 @@
 		<nav class="navbar">
 			<a href="{{url_for('main_page')}}" class="logo">GameNews</a>
 			<ul class="menu">
+				<li class="item">
+					<a href="{{ url_for('profile_redirect') }}" class="link">Профиль</a>
+				</li>
 				<li class="item">
 					<a href="{{url_for('main_page')}}" class="link">Статьи</a>
 				</li>
