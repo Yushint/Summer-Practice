@@ -23,7 +23,7 @@ def is_file_allowed(filename):
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "summer_practice_secret_key" # защита cookies и session
+app.config["SECRET_KEY"] = "summer_practice_secret_key" 
 app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 app.permanent_session_lifetime = datetime.timedelta(days=5)
 
@@ -100,11 +100,20 @@ def main_page():
     articles_list = articles_model.get_all_articles(amount=5)
     return render_template("home.html", articles=articles_list, title="GameNews - Статьи")
 
+@app.route("/profile_redirect")
+def profile_redirect():
+    """ Делает редирект на страницу пользователя при прогрузке
+        базового шаблона.
+    """
+    return redirect(url_for("profile_page", username=session["username"]))
+
 @app.route("/profile/<string:username>")
 def profile_page(username):
     """ Обработчик страницы профиля пользователя. """
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
+    if session["username"] == "admin":
+        return redirect(url_for("administrator_page"))
     users_model = UsersModel(db.get_connection())
     selected_articles_model = SelectedArticlesModel(db.get_connection())
     articles_model = ArticlesModel(db.get_connection())
@@ -118,12 +127,14 @@ def profile_page(username):
         for element in selected_articles_list:
             articles.append(articles_model.get_article(element))
             #user_name[1], password_hash[2], email[3], is_admin[4], avatar[5] 
-        return render_template("profile.html", articles=articles, user=user_info) # render_template("profile")
+        return render_template("profile.html", articles=articles, user=user_info) 
     else:
         abort(404)
         
 @app.route("/avatar_changing", methods=["GET", "POST"])
 def profile_avatar_changing():
+    """ Обработчик изменения аватара пользователя.
+    """
     if "username" not in session:
         return redirect(url_for("user_data_handler"))
     if request.method == "POST":
@@ -145,7 +156,7 @@ def profile_avatar_changing():
     
 @app.route("/article/select_article/<int:selection_id>", methods=["GET", "POST"])
 def article_selection_handler(selection_id):
-    """ Обработчки добавления статьи в избранное."""
+    """ Обработчик добавления статьи в избранное."""
     if request.method == "POST":
         selected_articles_model = SelectedArticlesModel(db.get_connection())
         users_model = UsersModel(db.get_connection())
@@ -164,9 +175,9 @@ def article_page(article_id):
     articles_model = ArticlesModel(db.get_connection())
     if articles_model.is_article_exists(article_id)[0]:
         current_article = articles_model.get_article(article_id)
-        return render_template("page.html", article=current_article) # позже берём статью по уникальному id или url и рендерим.
+        return render_template("page.html", article=current_article) 
     else:
-        abort(404) #sqlite3 exception.
+        abort(404) 
         #id[0] author[1] title[2] key_theme[3] text[4] image_preview[5] image_top[6] image_bottom[7]
     
 @app.route("/administrator")
