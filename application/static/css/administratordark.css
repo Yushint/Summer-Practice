@@ -185,3 +185,25 @@ textarea {
         width: 292px;
     }
 }
+
+.sumbit-btn {
+  min-width: 100px;
+  font-family: inherit;
+  appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: #4676d7;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sumbit-btn:hover {
+  background: #1d49aa;
+}
+
+.sumbit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px #cbd6ee;
+}
